@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 node_modules
 .env
+=======
+node_modules/
+.env
+>>>>>>> 62423bd (Pushed Backend folder with lec-1 and lec-2)
