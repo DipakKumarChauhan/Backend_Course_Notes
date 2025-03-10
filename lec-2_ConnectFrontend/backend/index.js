@@ -4,7 +4,7 @@ app.get('/', (req,res)=>{
     res.send('Server is ready');
 })
 
-app.get('/jokes', (req,res)=>{
+app.get('/api/jokes', (req,res)=>{
     const jokes = [
      {
         id:1,
@@ -25,9 +25,7 @@ app.get('/jokes', (req,res)=>{
         id:4,
         title: 'Joke 4',
         content: "this is joke 4"
-     } ,
-     
-     
+     } ,          
     ];
     res.json(jokes);
 })
@@ -36,3 +34,14 @@ const port = process.env.PORT || 3000;
 app.listen(port , () => {
     console.log(`serve at http://localhost:${port}`);
 })
+
+
+
+
+
+
+
+
+
+
+
