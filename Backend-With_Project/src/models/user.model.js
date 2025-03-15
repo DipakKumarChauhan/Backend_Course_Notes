@@ -1,6 +1,6 @@
 import mongoose, {Schema} from 'mongoose';
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs"; // Ihave installed Bcryptjs instead of bcrypt so this import statement is changed
+import bcrypt from "bcryptjs"; // I have installed Bcryptjs instead of bcrypt so this import statement is changed
 
 
 // Model Schema
@@ -68,7 +68,7 @@ refreshToken :
 
 // Password hashing
 
-// this is middle ware thats why we are using function keyword and it has next too
+// this is middle-ware thats why we are using function keyword and it has next too so that we can process next req
 
 userSchema.pre("save" ,async function (next) {
 
