@@ -8,6 +8,7 @@ import dotenv from "dotenv"; // note sirf itne se nahi chalega dotenv ko config 
 
 
  import connectDB from "./db/index.js";
+ import {app} from './app.js';
     connectDB() // Note connectDB uses async await and this returns promises on which we can apply .then() , .catch()
     .then(()=>{
         // By this part of code server will start and listen to the port.

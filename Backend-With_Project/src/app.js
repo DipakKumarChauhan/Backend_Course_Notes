@@ -23,5 +23,21 @@ app.use(cookieParser()); // This is used to parse the incoming request with cook
 // note cookie ko browser me store karte hain aur jab bhi hum koi request bhejte hain tho usme cookies bhi bhejte hain aur jab server ko request milti hai tho usme cookies bhi aati hain aur server ko pata chal jata hai ki ye user kaun hai aur uska data kya hai. and server hi cookies padh sakte hain
 
 
+//#######################################################################################################################################################################################
+
+
+// Routes
+
+// Routes import
+import userRouter from "./routes/user.routes.js";
+
+// Routes declaration
+
+// Note Coz we are writing routes and controllers in different files so we have to import the routes and controllers in the app.js file and then we to use the routes in the app.js file we have to use middleware
+// so instead of app.get or app.post we use app.use and then we have to specify the path of the route and then we have to specify the route file
+
+app.use("/api/v1/users", userRouter); // by this code when someone types /users we pass controll to userRouter and wahan vo bolega karna kya hai
+
+
 
 export{app};
