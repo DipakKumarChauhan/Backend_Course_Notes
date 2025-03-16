@@ -78,7 +78,7 @@ userSchema.pre("save" ,async function (next) {
     // If statement is used to check if password is modified or not coz agar lagaya tho har baar user kuch bhi modify karega password hash hojayega
    // So if if statement helps us to avoid this
 
-    this.password = bcrypt.hashSync(this.password , 10)
+    this.password = await bcrypt.hashSync(this.password , 10)
     next()
 
 } )
