@@ -30,7 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
    //check if user already exists
 
                 // User comes from user.model.js and is directly connected to DB and can call DB when it wants to.
-        const existedUser = User.findOne({
+        const existedUser = await User.findOne({
             $or: [{ username }, { email }]
         })
 
@@ -40,9 +40,18 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
    // check for imaages , check for avatar
+   console.log("req.files:", req.files);
+   console.log("req.files?.avatar:", req.files?.avatar);
+   
+        const avatarLocalPath =  req.files?.avatar[0]?.path || null; // this is how we get the path of the image
+        //const coverImageLocalPath = req.files?.coverImage[0]?.path || null;
+        let coverImageLocalPath ;
 
-        const avatarLocalPath =  req.files?.avatar[0]?.path; // this is how we get the path of the image
-        const coverImageLocalPath = req.files?.coverImage[0]?.path;
+        if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0)
+        {
+            coverImageLocalPath = req.files.coverImage[0].path;
+        }
+        
         if(!avatarLocalPath)
         {
             throw new ApiError(400, "Avatar is required");
