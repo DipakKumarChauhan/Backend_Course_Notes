@@ -5,7 +5,9 @@ import dotenv from "dotenv"; // note sirf itne se nahi chalega dotenv ko config 
 // import mongoose from "mongoose";
 //  import {DB_NAME} from "./constants.js";
  // Note above code is commented coz we are not using it in this project. isko use hum tabkarenge jab neeche wala express wala approach use karenge.
-
+ console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET);
+ console.log("REFRESH_TOKEN_SECRET:", process.env.REFRESH_TOKEN_SECRET);
+ 
 
  import connectDB from "./db/index.js";
  import {app} from './app.js';

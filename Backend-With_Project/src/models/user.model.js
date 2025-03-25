@@ -104,9 +104,8 @@ return jwt.sign(
     username: this.username,
     fullName: this.fullname
 },
-process.env.ACCESS_TOKEN_SCERET, {
+process.env.ACCESS_TOKEN_SECRET, { // 🔥 FIXED THE TYPO
     expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-
 }
 )
 };
@@ -122,9 +121,8 @@ userSchema.methods.generateRefreshToken = function () {
             username: this.username,
             fullName: this.fullname
         },
-        process.env.REFRESH_TOKEN_SCERET, {
+        process.env.REFRESH_TOKEN_SECRET, { // 🔥 FIXED THE TYPO
             expiresIn: process.env.REFRESH_TOKEN_EXPIRY
-        
         }
         )
 }

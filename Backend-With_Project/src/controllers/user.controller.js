@@ -4,12 +4,20 @@ import {User} from '../models/user.model.js';
 import {uploadONCloudinary} from '../utils/cloudinary.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 
+import jwt from "jsonwebtoken"
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshToken = async (userId) =>{
     try
     {
-        const user = await UserfindById(userId);
+        const user = await User.findById(userId);
 
+        console.log("Fetched user:", user); // Debugging log
+
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        console.log("Generating tokens...");
         const accessToken  = user.generateAccessToken() //thse are just methodsso we need ()
 
         const refreshToken =  user.generateRefreshToken()
@@ -24,6 +32,7 @@ const generateAccessAndRefreshToken = async (userId) =>{
                     return {accessToken, refreshToken};  
     }
     catch (error) {
+        console.error("Error generating tokens:", error); 
         throw new ApiError(500, "Something went wrong while generating tokens");
     }
 }
@@ -136,7 +145,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
 // get data from req body
     const {email , username, password} =req.body;
-    if(!username || !email) {
+    if(!username && !email) {
         throw new ApiError(400, "Username or email is required");
     }
 

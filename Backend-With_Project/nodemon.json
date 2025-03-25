@@ -1,0 +1,8 @@
+{
+    "env": {
+      "ACCESS_TOKEN_SECRET": "123456789",
+      "REFRESH_TOKEN_SECRET": "987654321"
+    },
+    "exec": "node -r dotenv/config src/index.js"
+  }
+  
