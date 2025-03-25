@@ -4,6 +4,33 @@ import {User} from '../models/user.model.js';
 import {uploadONCloudinary} from '../utils/cloudinary.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 
+
+const generateAccessAndRefreshToken = async (userId) =>{
+    try
+    {
+        const user = await UserfindById(userId);
+
+        const accessToken  = user.generateAccessToken() //thse are just methodsso we need ()
+
+        const refreshToken =  user.generateRefreshToken()
+
+            // In above code w have just generated the Tokens into the method abhi vo bahar nahi gaya hai
+                
+            // addding the refresh token to the database
+
+                    user.refreshToken = refreshToken;
+                    await user.save({validateBeforeSave: false}); // we are not validating the data before saving it to the database
+
+                    return {accessToken, refreshToken};  
+    }
+    catch (error) {
+        throw new ApiError(500, "Something went wrong while generating tokens");
+    }
+}
+
+
+
+
 const registerUser = asyncHandler(async (req, res) => {
    // Get user details from front-End
 
@@ -106,4 +133,95 @@ const registerUser = asyncHandler(async (req, res) => {
 
 });
 
-export {registerUser};
+const loginUser = asyncHandler(async (req, res) => {
+// get data from req body
+    const {email , username, password} =req.body;
+    if(!username || !email) {
+        throw new ApiError(400, "Username or email is required");
+    }
+
+// usernam or email data input lo
+
+    const user =  await User.findOne( // findOne is a mongoose method used to find data in DB
+        {
+        $or: [{username}, {email}] // by this line we can search for either one of them in DB we dont need to write two cases
+        })  
+//find the user
+    if(!user)
+        {
+            throw new ApiError(404, "User does not exist");
+        }
+//check if password is correct
+
+        // Note we can not use User in place of user coz User is a mongoose model and user is a data from DB User will give functionsof mongoose not what we nee 
+       
+        const mactchPass =  await user.isPasswordCorrect(password);
+
+        if(!mactchPass)
+        {
+            throw new ApiError(401, "Invalid user credentials");
+        }
+
+
+//access and refresh token
+
+    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id);;
+
+//send cookies
+        // WE DO BELOW STEP coz humne user._id liya hai {accessToken, refreshToken} isme but abhi bhi user object khali hai tho usko bharna hoga
+        // Here we are again calling DB but if you think its expensive we can simply update is.
+
+        const logggedInUser = await User.findById(user._id).select("-password -refreshToken")
+    
+        // By default cookies ko koi bhi modify kar sakta hai on frontend se But BY enabling Options true only server can modify cookies
+        const options = {
+            httpOnly: true, 
+            secure: true
+        }
+
+        return res
+        .status(200)
+        .cookie("accessToken", accessToken,options)
+        .cookie("refreshToken", refreshToken,options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: logggedInUser,accessToken,refreshToken
+                },
+                "User Logged In successfuly"
+            )
+        )
+
+});
+
+const logoutUser = asyncHandler(async(req,res) => {
+
+   const updatedRefreshToken= await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                refreshToken: undefined
+            }
+        },
+        {
+            new : true
+        }
+    )
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken",options)
+    .json (
+        new ApiResponse(200 ,  {} , "User Logged out")
+    )
+})
+
+ 
+export {registerUser, loginUser , logoutUser};
